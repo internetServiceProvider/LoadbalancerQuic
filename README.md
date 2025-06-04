@@ -10,34 +10,43 @@ El objetivo principal es demostrar y facilitar la configuración de HTTP/3 en un
 
 ```
 
-                               +-----------------------------+
-                               |        Usuario Final        |
-                               +--------------+--------------+
-                                              |
-                                              | (HTTPS - TCP/443)
-                                              | (HTTP/3 - UDP/443)
-                                              v
+                              +-------------------------+
+                              |      Usuario Final      |
+                              +-----------+-------------+
+                                          |
+                                          | (HTTPS - TCP/443)
+                                          | (HTTP/3 - UDP/443)
+                                          | (Acceso via yourdomain.test)
+                                          v
 
 +-------------------------------------------------------------------------------------------+
-| Máquina Virtual: Proxy (Nginx) |
+| Máquina Virtual: Proxy Nginx (Load Balancer) |
+| IP: 192.168.50.20 |
 | |
-| +--------------------------+ +-------------------------------------------------+ |
-| | Interfaz Red | --> | Nginx (proxy_load_balancer) | |
-| | (e.g., 192.168.56.100) | | - Terminación SSL/TLS | |
-| +--------------------------+ | - Soporte HTTP/1.1, HTTP/2, HTTP/3 (QUIC) | |
-| | - Balanceo de carga (round-robin) | |
-| +---------------------+---------------------------+ |
+| +------------------------+ +-------------------------------------------------+ |
+| | Interfaz de Red | ----> | Nginx Service (en Proxy) | |
+| | (Escucha en 443/tcp | | - Terminación SSL/TLS (Certificado Autofirmado) | |
+| | y 443/udp) | | - Soporte HTTP/1.1, HTTP/2, HTTP/3 (QUIC) | |
+| +------------------------+ | - Balanceo de carga (ej. Round-Robin) | |
+| | - Proxy Reverso hacia los Web Servers Backend | |
+| +-----------------------+-------------------------+ |
 | | | |
-+-----------------------------------------------------------|------------|------------------+
++-------------------------------------------------------------|----------|------------------+
 | |
-(HTTP/2 o HTTP a los backends) | | (HTTP/2 o HTTP a los backends)
+(Tráfico interno, ej. HTTP/2 o HTTP) | | (Tráfico interno, ej. HTTP/2 o HTTP)
 v v
-+---------------------------------+ +---------------------------------+
++-------------------------------------------+ +-------------------------------------------+
 | Máquina Virtual: Web Server 1 | | Máquina Virtual: Web Server 2 |
-| (Nginx, e.g., 192.168.56.101) | | (Nginx, e.g., 192.168.56.102) |
-| - Sirve contenido estático | | - Sirve contenido estático |
-| - Escucha en HTTP/HTTP2 | | - Escucha en HTTP/HTTP2 |
-+---------------------------------+ +---------------------------------+
+| IP: 192.168.50.21 | | IP: 192.168.50.22 |
+| | | |
+| +-------------------------------+ | | +-------------------------------+ |
+| | Nginx Service (Backend) | | | | Nginx Service (Backend) | |
+| | - Sirve contenido estático | | | | - Sirve contenido estático | |
+| | (ej. index.html) | | | | (ej. index.html) | |
+| | - Escucha en puerto interno | | | | - Escucha en puerto interno | |
+| | (ej. 80 o 8080) | | | | (ej. 80 o 8080) | |
+| +-------------------------------+ | | +-------------------------------+ |
++-------------------------------------------+ +-------------------------------------------+
 
 ```
 
@@ -121,19 +130,15 @@ Sigue estos pasos para levantar y configurar el entorno:
 
 **Variables Importantes:**
 
-- **IPs de las VMs:** Definidas en el `Vagrantfile`. Por defecto podrían ser:
-  - `proxy`: `192.168.56.100` (configurable en el Vagrantfile)
-  - `web1`: `192.168.56.101` (configurable en el Vagrantfile)
-  - `web2`: `192.168.56.102` (configurable en el Vagrantfile)
+- **IPs de las VMs:** Estas IPs deben estar configuradas en tu `Vagrantfile` y/o en el inventario de Ansible (`inventories/development/hosts.ini`). Para este proyecto, las IPs son:
+  - `proxy`: `192.168.50.20`
+  - `web1`: `192.168.50.21`
+  - `web2`: `192.168.50.22`
 - **Dominio de Prueba:** El proxy Nginx se configurará para un nombre de dominio. Este suele estar definido en las variables de Ansible (ej. `roles/nginx_quic_proxy/vars/main.yml` o `inventories/development/host_vars/proxy.yml`). Para las pruebas, usaremos `yourdomain.test` como ejemplo. Deberás añadirlo a tu archivo `/etc/hosts` local:
-
   ```
   # Añadir esta línea a tu archivo /etc/hosts (o C:\Windows\System32\drivers\etc\hosts en Windows)
-  192.168.56.100 yourdomain.test
+  192.168.50.20 yourdomain.test
   ```
-
-  (Reemplaza `192.168.56.100` si la IP de tu proxy VM es diferente).
-
 - **Certificados SSL:** El rol `nginx_quic_proxy` (específicamente la tarea `01_setup_ssl.yml`) genera un certificado SSL autofirmado para el dominio de prueba. Estos se almacenan típicamente en `/etc/nginx/ssl/` dentro de la VM del proxy (ej. `nginx.crt` y `nginx.key`).
 
 ## 5. Pruebas de QUIC / HTTP3
@@ -143,7 +148,7 @@ Una vez que el entorno esté configurado, puedes probar la conexión HTTP/3.
 ### A. Preparación
 
 - Asegúrate de que el script `configure.sh` haya finalizado correctamente.
-- Verifica que el dominio de prueba (ej. `yourdomain.test`) esté añadido a tu archivo `/etc/hosts` local y apunte a la IP de la VM del proxy.
+- Verifica que el dominio de prueba (ej. `yourdomain.test`) esté añadido a tu archivo `/etc/hosts` local y apunte a la IP de la VM del proxy (`192.168.50.20`).
 
 ### B. Pruebas con Google Chrome
 
