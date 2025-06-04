@@ -1,0 +1,31 @@
+---
+- name: Find existing files in /usr/share/nginx/html
+  ansible.builtin.find:
+    paths:
+      - /usr/share/nginx/html
+    file_type: file
+  register: files_to_remove_in_docroot
+
+- name: Remove existing files from /usr/share/nginx/html
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ files_to_remove_in_docroot.files }}"
+  when: files_to_remove_in_docroot.files is defined and files_to_remove_in_docroot.files | length > 0
+
+- name: Copiar archivos HTML a /usr/share/nginx/html
+  template:
+    src: "{{ item }}"
+    dest: "/usr/share/nginx/html/{{ item | regex_replace('\\.j2$', '') }}"
+    mode: "0644"
+  loop:
+    - index.html.j2
+
+- name: Reemplazar configuración default de NGINX
+  template:
+    src: templates/web-default.conf.j2
+    dest: /etc/nginx/sites-enabled/default
+    mode: "0644"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+  notify: Restart NginX daemon

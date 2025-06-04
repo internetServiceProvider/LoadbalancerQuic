@@ -1,0 +1,25 @@
+---
+# tasks/02_configure_nginx.yml - Nginx Configuration
+
+- name: Template Nginx proxy configuration file
+  ansible.builtin.template:
+    src: quic_proxy.conf.j2
+    dest: "/etc/nginx/conf.d/{{ nginx_proxy_conf_filename }}" # O /etc/nginx/sites-available/ y luego symlink
+    owner: root
+    group: root
+    mode: "0644"
+  notify: "reload nginx" # Recargar Nginx si la configuración cambia
+
+# Opcional: Asegurar que la configuración por defecto de Nginx no interfiera (si es necesario)
+# - name: Remove default Nginx site if it exists
+#   ansible.builtin.file:
+#     path: /etc/nginx/sites-enabled/default
+#     state: absent
+#   notify: "reload nginx"
+
+- name: Validate Nginx configuration
+  ansible.builtin.command: nginx -t
+  changed_when: false # Este comando no cambia el estado, solo valida
+  register: nginx_config_test
+  failed_when: nginx_config_test.rc != 0 # Fallar si nginx -t no es exitoso
+  check_mode: no # Siempre ejecutar la validación incluso en check_mode

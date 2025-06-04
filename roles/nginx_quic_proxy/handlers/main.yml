@@ -1,0 +1,13 @@
+---
+# handlers file for nginx_quic_proxy
+- name: Reload Nginx
+  ansible.builtin.systemd:
+    name: nginx
+    state: reloaded
+  listen: "reload nginx"
+
+- name: Restart Nginx
+  ansible.builtin.systemd:
+    name: nginx
+    state: restarted
+  listen: "restart nginx"

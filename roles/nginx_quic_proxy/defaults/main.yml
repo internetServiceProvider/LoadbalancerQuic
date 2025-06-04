@@ -1,0 +1,37 @@
+---
+# defaults file for nginx_quic_proxy
+
+# IP del servidor Nginx donde se aplicará este rol.
+# Es importante para el common name del certificado autofirmado.
+# DEBES sobrescribir esto en tu playbook o inventario con la IP real del proxy.
+nginx_proxy_ip: "127.0.0.1"
+
+# Lista de servidores web backend.
+# Ejemplo:
+# nginx_backend_servers:
+#   - ip: "192.168.50.21"
+#     port: 80
+#   - ip: "192.168.50.22"
+#     port: 80
+nginx_backend_servers:
+  - ip: "192.168.18.182" # IP de tu primer webserver
+    port: 80
+  - ip: "192.168.18.183" # IP de tu segundo webserver
+    port: 80
+
+# Nombre del archivo de configuración de Nginx para el sitio proxy
+nginx_proxy_conf_filename: "quic_proxy.conf"
+
+# Rutas para los certificados SSL autofirmados
+nginx_ssl_dir: "/etc/nginx/ssl"
+nginx_ssl_key_path: "{{ nginx_ssl_dir }}/nginx-selfsigned.key"
+nginx_ssl_cert_path: "{{ nginx_ssl_dir }}/nginx-selfsigned.crt"
+nginx_ssl_subj: "/C=CO/ST=ValleDelCauca/L=Vijes/O=LocalTest/OU=NginxQUICProxy/CN={{ nginx_proxy_ip }}"
+
+# Usuario y grupo de Nginx (varía según la distribución)
+nginx_user: "www-data" # Para Debian/Ubuntu
+# nginx_user: "nginx"     # Para CentOS/RHEL/AlmaLinux
+
+# Método de balanceo de carga de Nginx (opciones: "", "least_conn", "ip_hash")
+# Vacío ("") usa round-robin por defecto.
+nginx_load_balancing_method: ""

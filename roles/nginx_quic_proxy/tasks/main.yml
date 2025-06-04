@@ -1,0 +1,18 @@
+---
+# tasks file for nginx_quic_proxy
+
+- name: Include SSL setup tasks
+  ansible.builtin.include_tasks: 01_setup_ssl.yml
+
+- name: Include Nginx configuration tasks
+  ansible.builtin.include_tasks: 02_configure_nginx.yml
+
+- name: Include Firewall configuration tasks
+  ansible.builtin.include_tasks: 03_firewall.yml
+
+# Asegurarse de que Nginx esté iniciado y habilitado
+- name: Ensure Nginx service is started and enabled
+  ansible.builtin.systemd:
+    name: nginx
+    state: started
+    enabled: yes

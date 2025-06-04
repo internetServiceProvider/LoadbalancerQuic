@@ -1,0 +1,56 @@
+---
+# tasks/01_setup_ssl.yml - SSL Certificate Generation
+
+- name: Ensure SSL directory exists
+  ansible.builtin.file:
+    path: "{{ nginx_ssl_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Generate self-signed SSL key
+  community.crypto.openssl_privatekey:
+    path: "{{ nginx_ssl_key_path }}"
+    size: 2048
+    type: RSA
+    mode: "0600" # Llave privada debe ser restrictiva
+  when: not (ansible_check_mode)
+  register: ssl_key_details
+
+- name: Generate CSR for the self-signed certificate
+  community.crypto.openssl_csr_pipe:
+    privatekey_path: "{{ nginx_ssl_key_path }}"
+    common_name: "{{ nginx_proxy_ip }}"
+    organization_name: "LocalTest"
+    organizational_unit_name: "NginxQUICProxy"
+    locality_name: "Vijes"
+    state_or_province_name: "ValleDelCauca"
+    country_name: "CO"
+    subject_alt_name:
+      - "IP:{{ nginx_proxy_ip }}"
+  register: generated_csr
+  when: not (ansible_check_mode)
+  # --- Inicio de la corrección ---
+  # Simplificamos la condición failed_when
+  # Asumimos que si 'rc' no está definido (porque la tarea se saltó o falló antes de 'rc'), no es un fallo de 'rc != 0'
+  # El módulo fallará por sí mismo si hay un error en la generación del CSR que resulte en rc != 0
+  # Por lo tanto, una condición explícita de 'failed_when' aquí puede ser redundante o se puede simplificar.
+  # Vamos a basarnos en el fallo natural del módulo si rc es distinto de 0.
+  # Si quieres ser explícito, puedes hacer:
+  failed_when: "generated_csr.rc is defined and generated_csr.rc != 0"
+  # --- Fin de la corrección ---
+
+- name: Generate self-signed SSL certificate from CSR
+  community.crypto.x509_certificate:
+    path: "{{ nginx_ssl_cert_path }}"
+    csr_content: "{{ generated_csr.csr }}"
+    privatekey_path: "{{ nginx_ssl_key_path }}"
+    provider: selfsigned
+    selfsigned_not_after: "+365d"
+    mode: "0644"
+  when:
+    - not (ansible_check_mode)
+    - generated_csr.csr is defined
+  register: ssl_cert_generated
+  notify: "restart nginx"

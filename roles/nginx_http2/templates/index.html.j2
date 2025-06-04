@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovaLink - Internet de Ultra Alta Velocidad por Fibra Óptica</title>
+    <style>
+        /* Estilos Generales */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f8;
+            color: #333;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: auto;
+            overflow: hidden;
+            padding: 0 20px;
+        }
+
+        h1, h2, h3 {
+            color: #1A237E; /* Azul oscuro principal */
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+        }
+
+        section {
+            padding: 60px 0;
+        }
+
+        hr {
+            border: 0;
+            height: 1px;
+            background: #ddd;
+            margin: 20px 0;
+        }
+
+
+        /* Barra de Navegación */
+        header {
+            background-color: #1A237E; /* Azul oscuro principal */
+            color: #fff;
+            padding: 1em 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        header nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+        }
+
+        header nav ul li {
+            margin-left: 25px;
+        }
+
+        header nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.1em;
+            transition: color 0.3s ease;
+        }
+
+        header nav ul li a:hover {
+            color: #82B1FF; /* Azul claro para hover */
+        }
+
+        /* Sección Hero */
+        #hero {
+            background: linear-gradient(rgba(26, 35, 126, 0.8), rgba(26, 35, 126, 0.7)), url('https://images.unsplash.com/photo-1522199755839-a2bacb67c546?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzOTAwZXwwfDF8cmFuZG9tfHx8fHx8fHx8MTY4NTY2NjQ2Mg&ixlib=rb-4.0.3&q=80&w=1200') no-repeat center center/cover;
+            color: #fff;
+            text-align: center;
+            padding: 100px 0; /* Reducido un poco el padding para pantallas más pequeñas */
+        }
+
+        #hero h1 {
+            font-size: 3em; /* Ajustado */
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        #hero p {
+            font-size: 1.3em; /* Ajustado */
+            margin-bottom: 30px;
+        }
+
+        .cta-button {
+            background-color: #42A5F5; /* Azul medio */
+            color: #fff;
+            padding: 12px 25px; /* Ajustado */
+            text-decoration: none;
+            font-size: 1.1em; /* Ajustado */
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: inline-block; /* Para que el margen funcione correctamente */
+        }
+
+        .cta-button:hover {
+            background-color: #1E88E5; /* Azul más oscuro para hover */
+            transform: translateY(-2px);
+        }
+        
+        .plan-card .cta-button {
+             margin-top: 20px;
+             margin-bottom: 5px; /* Margen inferior para el botón dentro de la tarjeta */
+        }
+
+
+        /* Sección Planes */
+        #plans .plans-grid {
+            display: flex;
+            justify-content: center; /* Centrar las tarjetas si son menos de 3 */
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .plan-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 25px; /* Ajustado padding general */
+            width: calc(50% - 40px); /* Para dos tarjetas, ajusta según el gap */
+            max-width: 400px; /* Ancho máximo para las tarjetas */
+            min-width: 280px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Para alinear el botón abajo */
+        }
+         .plan-card-content {
+            flex-grow: 1; /* Permite que el contenido crezca y empuje el botón hacia abajo */
+        }
+
+
+        .plan-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .plan-card h3 {
+            font-size: 1.8em;
+            margin-top: 0; /* Quitar margen superior del h3 */
+            margin-bottom: 15px;
+            color: #1E88E5; /* Azul medio */
+        }
+
+        .plan-card .price {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: #1A237E;
+            margin-bottom: 10px;
+        }
+
+        .plan-card .price span {
+            font-size: 0.5em;
+            font-weight: normal;
+        }
+
+        .plan-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .plan-card ul li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .plan-card ul li::before {
+            content: '✔';
+            color: #4CAF50; /* Verde para checkmark */
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+        .plan-card .qos-details {
+            font-size: 0.9em;
+            color: #555;
+            margin-top:15px;
+            padding-top:15px;
+            border-top: 1px solid #eee;
+            text-align: left;
+        }
+        .plan-card .qos-details p { margin-bottom: 5px; }
+
+
+        /* Sección Tecnología */
+        #technology {
+            background-color: #fff;
+        }
+        #technology .container {
+            text-align: center;
+        }
+        #technology p {
+            font-size: 1.1em;
+            max-width: 800px;
+            margin: 0 auto 20px auto;
+        }
+        .tech-items { /* Cambiado de tech-icons a tech-items */
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap; /* Para que se ajusten en pantallas pequeñas */
+            gap: 20px; /* Espacio reducido */
+            margin-top: 30px;
+        }
+        .tech-item { /* Estilo para cada item de tecnología */
+            background-color: #E3F2FD; /* Azul muy claro */
+            padding: 15px 20px; /* Padding ajustado */
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            font-size: 1.1em;
+            font-weight: 500;
+            color: #1A237E;
+        }
+        .tech-item strong { /* Para resaltar marcas */
+            color: #1E88E5;
+        }
+
+
+        /* Sección Herramientas */
+        #tools .tools-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .tool-item {
+            background-color: #E3F2FD; /* Azul muy claro */
+            color: #1A237E;
+            padding: 10px 20px;
+            border-radius: 20px; /* Estilo "píldora" */
+            font-size: 1em;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* Footer */
+        footer {
+            background-color: #1A237E; /* Azul oscuro principal */
+            color: #BDBDBD; /* Gris claro para texto de footer */
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 40px;
+        }
+        footer p { margin: 0; }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .plan-card {
+                width: calc(50% - 30px); /* Mantiene dos tarjetas en línea si hay espacio */
+                max-width: none; /* Permite que se estiren un poco más si es necesario */
+            }
+        }
+        
+        @media (max-width: 768px) {
+            header .container {
+                flex-direction: column;
+                align-items: center; /* Centrar logo y nav en móvil */
+            }
+            header nav {
+                width: 100%; /* Nav ocupa todo el ancho */
+            }
+            header nav ul {
+                margin-top: 10px;
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+            }
+            header nav ul li {
+                margin: 8px 0; /* Más espacio vertical en nav móvil */
+                width: 100%;
+                text-align: center;
+            }
+            header nav ul li a {
+                display: block; /* Para que ocupe todo el ancho del li */
+                padding: 5px 0;
+            }
+
+            #hero h1 { font-size: 2.5em; }
+            #hero p { font-size: 1.1em; }
+            
+            .plans-grid {
+                flex-direction: column; /* Apilar tarjetas de planes */
+                align-items: center; /* Centrar tarjetas apiladas */
+            }
+            .plan-card {
+                width: 90%; /* Ancho de tarjetas en móvil */
+                max-width: 400px; /* Mantener un max-width razonable */
+                margin-bottom: 20px; /* Espacio entre tarjetas apiladas */
+            }
+            .tech-items {
+                flex-direction: column; /* Apilar ítems de tecnología */
+                align-items: center;
+            }
+            .tech-item {
+                width: 80%; /* Ancho de ítems de tecnología en móvil */
+                text-align:center;
+            }
+        }
+         @media (max-width: 480px) {
+            #hero h1 { font-size: 2em; }
+            #hero p { font-size: 1em; }
+            .cta-button { padding: 10px 20px; font-size: 1em;}
+            .plan-card h3 { font-size: 1.5em; }
+            .plan-card .price { font-size: 1.8em; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <a href="#hero" class="logo">NovaLink 🚀</a>
+            <nav>
+                <ul>
+                    <li><a href="#hero">Inicio</a></li>
+                    <li><a href="#plans">Planes</a></li>
+                    <li><a href="#technology">Nuestra Tecnología</a></li>
+                    <li><a href="#tools">Herramientas</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section id="hero">
+        <div class="container">
+            <h1>Conéctate al Futuro con NovaLink</h1>
+            <p>Internet de ultra alta velocidad por fibra óptica, estable y confiable para tu hogar o negocio.</p>
+            <a href="#plans" class="cta-button">Ver Planes Ahora</a>
+        </div>
+    </section>
+
+    <hr/>
+
+    <section id="plans">
+        <div class="container">
+            <h2>Nuestros Planes de Fibra Óptica GPON</h2>
+            <div class="plans-grid">
+                <div class="plan-card">
+                    <div class="plan-card-content">
+                        <h3>Fibra Estándar</h3>
+                        <div class="price">100 Mbps</div>
+                        <p>$99.000 COP<span>/mes</span></p>
+                        <ul>
+                            <li><strong>Velocidad Total:</strong> 100 Mbps Bajada / 50 Mbps Subida</li>
+                            <li>Ideal para streaming 4K, gaming y teletrabajo.</li>
+                            <li>Múltiples dispositivos conectados.</li>
+                            <li>Instalación rápida.</li>
+                        </ul>
+                        <div class="qos-details">
+                            <p><strong>Perfil QoS Estándar Dedicado:</strong></p>
+                            <p>🚀 Streaming: 20 Mbps garantizados (ráfagas hasta 50 Mbps).</p>
+                            <p>📞 Videollamadas: 15 Mbps garantizados.</p>
+                            <p>🌐 Navegación Web: 10 Mbps garantizados (ráfagas hasta 30 Mbps).</p>
+                        </div>
+                    </div>
+                    <a href="#" class="cta-button">Contratar Plan Estándar</a>
+                </div>
+
+                <div class="plan-card">
+                     <div class="plan-card-content">
+                        <h3>Fibra Premium</h3>
+                        <div class="price">200 Mbps</div>
+                        <p>$159.000 COP<span>/mes</span></p>
+                        <ul>
+                            <li><strong>Velocidad Total:</strong> 200 Mbps Bajada / 100 Mbps Subida</li>
+                            <li>Máxima experiencia para gamers, creadores y hogares inteligentes.</li>
+                            <li>Rendimiento superior para todas tus necesidades.</li>
+                            <li>Máxima prioridad y el doble de capacidad QoS.</li>
+                        </ul>
+                        <div class="qos-details">
+                            <p><strong>Perfil QoS Premium Reforzado:</strong></p>
+                            <p>🚀 Streaming: 40 Mbps garantizados (ráfagas hasta 100 Mbps).</p>
+                            <p>📞 Videollamadas: 30 Mbps garantizados.</p>
+                            <p>🌐 Navegación Web: 20 Mbps garantizados (ráfagas hasta 60 Mbps).</p>
+                        </div>
+                    </div>
+                    <a href="#" class="cta-button">Contratar Plan Premium</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr/>
+
+    <section id="technology">
+        <div class="container">
+            <h2>Nuestra Tecnología GPON de Vanguardia 📡</h2>
+            <p>En NovaLink, implementamos la última tecnología <strong>GPON (Gigabit Passive Optical Network)</strong> para llevar la fibra óptica directamente a tu hogar o empresa. Esto nos permite ofrecer velocidades simétricas, una conexión más estable y menor latencia.</p>
+            <p>Trabajamos con equipos de alta calidad de fabricantes líderes como <strong>Huawei</strong> y <strong>FiberHome</strong>, asegurando un rendimiento óptimo y confiabilidad en nuestro servicio.</p>
+            <div class="tech-items">
+                <div class="tech-item">💻 GPON</div>
+                <div class="tech-item">💡 Fibra Óptica Directa</div>
+                <div class="tech-item">Equipos <strong>Huawei</strong></div>
+                <div class="tech-item">Equipos <strong>FiberHome</strong></div>
+            </div>
+        </div>
+    </section>
+
+    <hr/>
+
+    <section id="tools">
+        <div class="container">
+            <h2>Herramientas que Potencian Nuestro Servicio 🛠️</h2>
+            <p style="text-align:center; font-size: 1.1em; max-width: 800px; margin: 0 auto 30px auto;">Utilizamos un conjunto robusto de herramientas de código abierto y soluciones de vanguardia para monitorear, gestionar y optimizar nuestra red, garantizando la mejor experiencia para ti:</p>
+            <div class="tools-grid">
+                <span class="tool-item">LibreQoS</span>
+                <span class="tool-item">LibreNMS</span>
+                <span class="tool-item">Nginx (Webserver & Loadbalancer)</span>
+                <span class="tool-item">BIND9</span>
+                <span class="tool-item">Kea-DHCP</span>
+                <span class="tool-item">TVWS (TV White Space Tech)</span>
+                <span class="tool-item">FreeRADIUS</span>
+                <span class="tool-item">Vagrant</span>
+                <span class="tool-item">Docker</span>
+                <span class="tool-item">Ansible</span>
+                <span class="tool-item">Grafana</span>
+                <span class="tool-item">Prometheus</span>
+                <span class="tool-item">QUIC Protocol Support</span>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 NovaLink. Internet de Confianza. Todos los derechos reservados.</p>
+            <p><small>Hecho con ❤️ en Colombia.</small></p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling para anclas
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

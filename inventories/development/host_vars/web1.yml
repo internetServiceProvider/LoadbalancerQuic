@@ -1,0 +1,5 @@
+ansible_host: 192.168.18.182
+ansible_ssh_private_key_file: /home/ricardo965/Documentos/Universidad/sem7/Infra II/Project/configs/loadbalancerQuic/files/.vagrant/machines/web1/virtualbox/private_key
+ansible_user: vagrant
+ansible_port: 22
+server_hostname: web1

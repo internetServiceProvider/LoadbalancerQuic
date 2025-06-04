@@ -1,0 +1,29 @@
+---
+- name: Print Facts
+  ansible.builtin.debug:
+    msg: "{{ ansible_facts.hostname }}"
+
+# - name: Update packages
+#   ansible.builtin.apt:
+#     update_cache: yes
+
+- name: Install Nginx
+  ansible.builtin.script: installNginx.sh
+  notify: Restart NginX daemon
+
+- name: Reemplazar configuración default de NGINX
+  template:
+    src: templates/nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    mode: "0644"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+
+- name: Crear carpeta /etc/nginx/sites-enabled
+  file:
+    path: /etc/nginx/sites-enabled
+    state: directory
+    mode: "0755"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+  notify: Restart NginX daemon
